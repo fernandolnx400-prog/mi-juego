@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conecta 4 - Minecraft Edition</title>
+    <!-- Fuente estilo Pixel/Minecraft -->
+    <link href="https://googleapis.com" rel="stylesheet">
+    <style>
+        :root {
+            --mc-gray: #AAAAAA;
+            --mc-dark-gray: #555555;
+            --mc-light-gray: #FFFFFF;
+            --mc-border-dark: #373737;
+            --mc-green: #528017;
+            --mc-shadow: #212121;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            /* Fondo de tierra/pasto pixelado */
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+                        url('https://transparenttextures.com'), #487e32;
+            font-family: 'VT323', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- CONTENEDOR --- */
+        .menu-wrapper {
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .title {
+            font-size: 5rem;
+            color: #fff;
+            text-shadow: 5px 5px 0px var(--mc-shadow);
+            margin-bottom: 60px;
+            letter-spacing: 2px;
+        }
+
+        /* --- BOTONES ESTILO MINECRAFT --- */
+        .button-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 0 20px;
+        }
+
+        .mc-button {
+            position: relative;
+            background-color: var(--mc-gray);
+            border: 4px solid #000;
+            border-top-color: var(--mc-light-gray);
+            border-left-color: var(--mc-light-gray);
+            border-right-color: var(--mc-dark-gray);
+            border-bottom-color: var(--mc-dark-gray);
+            color: #E0E0E0;
+            padding: 15px;
+            font-family: 'VT323', monospace;
+            font-size: 2rem;
+            text-shadow: 3px 3px 0px var(--mc-shadow);
+            cursor: pointer;
+            outline: none;
+            transition: all 0.1s;
+        }
+
+        /* Hover: Color verde de selección */
+        .mc-button:hover {
+            background-color: var(--mc-green);
+            color: #fff;
+            border-top-color: #7eb32f;
+            border-left-color: #7eb32f;
+            border-right-color: #2e4a0d;
+            border-bottom-color: #2e4a0d;
+        }
+
+        .mc-button:active {
+            transform: translateY(2px);
+            border: 4px solid #000;
+            box-shadow: inset 0 0 10px #000;
+        }
+
+        /* Etiqueta de versión abajo */
+        .version {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            color: #fff;
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="menu-wrapper">
+        <h1 class="title">CONECTA 4</h1>
+
+        <div class="button-list">
+            <!-- 🔥 SOLO SE AGREGÓ onclick -->
+            <button class="mc-button" onclick="parent.nav('juego')">JUGAR</button>
+            <button class="mc-button" onclick="parent.nav('ajustes')">AJUSTES</button>
+        </div>
+    </div>
+
+    <div class="version">Minecraft v1.20.4</div>
+
+    <script>
+        // Efecto de sonido de click opcional (feedback visual)
+        document.querySelectorAll('.mc-button').forEach(btn => {
+            btn.onclick = () => {
+                console.log("Acción: " + btn.innerText);
+            };
+        });
+    </script>
+</body>
+</html>

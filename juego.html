@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conecta 4 Neon - Final Boss Edition</title>
+    <style>
+        :root {
+            --size: 50px; 
+            --gap: 10px;
+            --neon: #00f2ff;
+            --neon-pink: #ff00ff;
+            --p1: #ff0055;
+            --p2: #00ffcc;
+        }
+        @media (min-width: 600px) { :root { --size: 70px; } }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #050505;
+            color: #fff;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        /* FONDO ANIMADO VISIBLE */
+        .cyber-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: radial-gradient(circle at center, #1a0033 0%, #000 100%);
+        }
+        .grid-lines {
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(0, 242, 255, 0.1) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 242, 255, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+            transform: perspective(500px) rotateX(60deg) translateY(0);
+            animation: moveGrid 5s linear infinite;
+        }
+        @keyframes moveGrid { to { transform: perspective(500px) rotateX(60deg) translateY(40px); } }
+
+        #status { margin: 20px; font-size: 1.5rem; text-shadow: 0 0 15px var(--neon); letter-spacing: 2px; }
+
+        .game-container {
+            position: relative;
+            width: calc((var(--size) * 7) + (var(--gap) * 8));
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .drop-zone { width: 100%; height: 100px; position: relative; }
+        
+        .drag-piece {
+            width: var(--size);
+            height: var(--size);
+            border-radius: 50%;
+            position: absolute;
+            top: 20px;
+            z-index: 100;
+            cursor: grab;
+            left: 0;
+            will-change: transform;
+        }
+
+        /* TABLERO NOTABLE */
+        .board {
+            position: relative;
+            background: rgba(0, 0, 0, 0.9);
+            border: 4px solid var(--neon);
+            border-radius: 15px;
+            padding: var(--gap);
+            display: grid;
+            grid-template-columns: repeat(7, var(--size));
+            grid-template-rows: repeat(6, var(--size));
+            gap: var(--gap);
+            box-shadow: 0 0 30px var(--neon), inset 0 0 20px var(--neon);
+            z-index: 10;
+        }
+
+        .hole { 
+            width: var(--size); 
+            height: var(--size); 
+            background: #000; 
+            border-radius: 50%; 
+            border: 1px solid rgba(0, 242, 255, 0.3);
+            box-shadow: inset 0 0 15px #000;
+        }
+
+        .token {
+            position: absolute;
+            width: var(--size);
+            height: var(--size);
+            border-radius: 50%;
+            z-index: 5; /* Dentro del tablero */
+            transition: top 0.6s cubic-bezier(0.5, 1.2, 0.5, 1);
+        }
+
+        .p1 { background: radial-gradient(circle at 30% 30%, var(--p1), #400); box-shadow: 0 0 20px var(--p1); }
+        .p2 { background: radial-gradient(circle at 30% 30%, var(--p2), #004); box-shadow: 0 0 20px var(--p2); }
+
+        /* TOAST DE VICTORIA */
+        #toast {
+            position: fixed;
+            top: -100px;
+            background: #000;
+            color: var(--neon-pink);
+            border: 2px solid var(--neon-pink);
+            padding: 15px 40px;
+            border-radius: 5px;
+            font-weight: bold;
+            text-transform: uppercase;
+            box-shadow: 0 0 25px var(--neon-pink);
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 1000;
+        }
+        #toast.show { top: 30px; }
+
+        .btn-reset {
+            margin-top: 20px;
+            padding: 10px 25px;
+            background: none;
+            border: 2px solid var(--neon-pink);
+            color: var(--neon-pink);
+            font-family: inherit;
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--neon-pink);
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cyber-bg"><div class="grid-floor grid-lines"></div></div>
+    <div id="status">TURN_READY: RED_SYSTEM</div>
+    <div id="toast"></div>
+
+    <div class="game-container" id="game-area">
+        <div class="drop-zone">
+            <div id="active-piece" class="drag-piece p1"></div>
+        </div>
+        <div class="board" id="main-board"></div>
+    </div>
+
+    <button id="reset-btn" class="btn-reset" onclick="location.reload()">REBOOT_MATCH</button>
+
+    <script>
+        const ROWS = 6, COLS = 7;
+        let currentPlayer = 1, isDragging = false, gameActive = true;
+        let boardState = Array(6).fill().map(() => Array(7).fill(0));
+        
+        const piece = document.getElementById('active-piece');
+        const gameArea = document.getElementById('game-area');
+        const boardUI = document.getElementById('main-board');
+
+        // AUDIO ENGINE
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        function sfx(f, type, d) {
+            const o = ctx.createOscillator(); const g = ctx.createGain();
+            o.type = type; o.frequency.value = f; o.connect(g); g.connect(ctx.destination);
+            o.start(); g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + d); o.stop(ctx.currentTime + d);
+        }
+
+        // INIT
+        for (let i = 0; i < 42; i++) boardUI.appendChild(Object.assign(document.createElement('div'), {className: 'hole'}));
+
+        let mouseX = 0, visualX = 0;
+        function loop() {
+            if (gameActive) {
+                const rect = gameArea.getBoundingClientRect();
+                const s = piece.offsetWidth;
+                if (isDragging) {
+                    let tx = mouseX - rect.left - (s / 2);
+                    tx = Math.max(10, Math.min(tx, rect.width - s - 10));
+                    visualX = tx;
+                } else {
+                    visualX += (rect.width / 2 - s / 2 - visualX) * 0.1;
+                }
+                piece.style.transform = `translateX(${visualX}px)`;
+            }
+            requestAnimationFrame(loop);
+        }
+        loop();
+
+        const move = (e) => mouseX = e.clientX || (e.touches ? e.touches.clientX : mouseX);
+        piece.onpointerdown = (e) => { if(gameActive) { isDragging = true; move(e); piece.setPointerCapture(e.pointerId); sfx(400, 'sine', 0.1); }};
+        window.onpointermove = move;
+        piece.onpointerup = (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            const col = Math.round(visualX / (piece.offsetWidth + 10));
+            if (col >= 0 && col < COLS) drop(col);
+        };
+
+        function drop(col) {
+            for (let r = ROWS - 1; r >= 0; r--) {
+                if (boardState[r][col] === 0) {
+                    boardState[r][col] = currentPlayer;
+                    spawn(r, col);
+                    sfx(150, 'square', 0.2); // Sonido caída
+                    
+                    if (check(r, col)) {
+                        gameActive = false;
+                        document.getElementById('toast').innerText = `CRITICAL_WIN: PLAYER_${currentPlayer === 1 ? 'RED' : 'NEON'}`;
+                        document.getElementById('toast').classList.add('show');
+                        document.getElementById('reset-btn').style.display = 'block';
+                        piece.style.display = 'none';
+                        sfx(600, 'sawtooth', 0.6); // Sonido victoria
+                        return;
+                    }
+                    currentPlayer = currentPlayer === 1 ? 2 : 1;
+                    piece.className = `drag-piece p${currentPlayer}`;
+                    document.getElementById('status').innerText = `TURN: ${currentPlayer === 1 ? 'RED_SYSTEM' : 'NEON_CORE'}`;
+                    sfx(800, 'sine', 0.05); // Sonido cambio
+                    return;
+                }
+            }
+        }
+
+        function spawn(r, col) {
+            const t = document.createElement('div');
+            t.className = `token p${currentPlayer}`;
+            const s = piece.offsetWidth;
+            const gap = 10;
+            t.style.left = (col * (s + gap) + gap) + "px";
+            t.style.top = "-80px";
+            boardUI.appendChild(t);
+            setTimeout(() => { t.style.top = (r * (s + gap) + gap) + "px"; }, 50);
+        }
+
+        function check(r, c) {
+            const win = (dr, dc) => {
+                let cnt = 1;
+                [[dr, dc], [-dr, -dc]].forEach(([tr, tc]) => {
+                    let nr = r + tr, nc = c + tc;
+                    while(nr>=0 && nr<6 && nc>=0 && nc<7 && boardState[nr][nc] === currentPlayer) {
+                        cnt++; nr+=tr; nc+=tc;
+                    }
+                });
+                return cnt >= 4;
+            };
+            return win(0,1) || win(1,0) || win(1,1) || win(1,-1);
+        }
+    </script>
+</body>
+</html>

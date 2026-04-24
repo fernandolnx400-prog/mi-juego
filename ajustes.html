@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORE.V44 - AJUSTES TERMINAL</title>
+    <style>
+        :root {
+            --neon-green: #00ff41;
+            --neon-red: #ff003c;
+            --white: #ffffff;
+            --bg: #050505;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--neon-green);
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            text-transform: uppercase;
+        }
+
+        @keyframes systemShake {
+            0% { transform: translate(0,0); }
+            1% { transform: translate(2px, -2px); }
+            2% { transform: translate(-2px, 2px); }
+            4% { transform: translate(0,0); }
+        }
+        
+        .shake-heavy { animation: systemShake 0.05s infinite !important; }
+
+        .terminal-frame {
+            width: 480px;
+            padding: 45px;
+            background: rgba(10, 10, 10, 0.98);
+            border: 2px solid var(--neon-green);
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.2);
+            position: relative;
+            animation: systemShake 5s infinite;
+            clip-path: polygon(0 0, 92% 0, 100% 8%, 100% 100%, 8% 100%, 0 92%);
+            transition: all 0.4s cubic-bezier(0.6, -0.28, 0.735, 0.045);
+        }
+
+        .header {
+            font-size: 1.8rem;
+            color: var(--white);
+            border-bottom: 2px solid var(--neon-green);
+            padding-bottom: 12px;
+            margin-bottom: 35px;
+            letter-spacing: 6px;
+            display: flex;
+            justify-content: space-between;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+
+        .setting-item { margin-bottom: 30px; }
+
+        .label-white {
+            color: var(--white);
+            font-size: 1.1rem;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+        .label-white::before { content: ">> "; color: var(--neon-green); }
+
+        select {
+            width: 100%;
+            background: #000;
+            border: 1px solid var(--neon-green);
+            color: var(--white);
+            padding: 14px;
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        select:hover { background: rgba(0, 255, 65, 0.1); }
+
+        .btn-init {
+            width: 100%;
+            padding: 20px;
+            background: transparent;
+            border: 2px solid var(--neon-red);
+            color: var(--neon-red);
+            font-family: inherit;
+            font-weight: bold;
+            font-size: 1.4rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.3s;
+            letter-spacing: 4px;
+            margin-top: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-init:hover {
+            background: var(--neon-red);
+            color: #fff;
+            box-shadow: 0 0 40px var(--neon-red);
+        }
+
+        .scanline {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(0, 255, 65, 0.05), transparent);
+            animation: scan 4s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scan {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(100%); }
+        }
+
+        .loading {
+            pointer-events: none;
+            filter: brightness(1.5);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="terminal-frame" id="mainFrame">
+        <div class="scanline"></div>
+        <div class="header">CORE.V44 <span>SETTINGS</span></div>
+
+        <div class="setting-item">
+            <span class="label-white">Ambiente_Visual</span>
+            <select id="env">
+                <option>CYBERPUNK_NEON_GRID</option>
+                <option>VOID_INDUSTRIAL_0.1</option>
+                <option>MATRIX_CORE_OVERRIDE</option>
+            </select>
+        </div>
+
+        <div class="setting-item">
+            <span class="label-white">Buffer_Velocidad (FPS)</span>
+            <select id="fps">
+                <option>UNLOCKED_200HZ</option>
+                <option>STABLE_120HZ</option>
+                <option>LIMIT_60HZ</option>
+            </select>
+        </div>
+
+        <button class="btn-init" id="btnLaunch" onclick="launchSystem()">Ejecutar_Protocolo</button>
+    </div>
+
+    <script>
+        function launchSystem() {
+            const frame = document.getElementById('mainFrame');
+            const btn = document.getElementById('btnLaunch');
+
+            frame.classList.add('shake-heavy');
+            btn.classList.add('loading');
+            btn.innerText = "ACCEDIENDO...";
+            
+            setTimeout(() => {
+                frame.style.transform = "scale(1.5) rotate(5deg)";
+                frame.style.opacity = "0";
+
+                window.location.href = "juego.html";
+            }, 1200);
+        }
+    </script>
+</body>
+</html>
