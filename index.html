@@ -1,46 +1,16 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Conecta 4</title>
-
-<style>
-html, body {
-    margin: 0;
-    height: 100%;
-    overflow: hidden;
-}
-iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-</style>
 </head>
+<body style="background:black; color:white; text-align:center; margin-top:50px;">
 
-<body>
+<h1>Conecta 4</h1>
 
-<iframe id="app" src="intro.html"></iframe>
-
-<script>
-let yaCambio = false;
-
-function nav(pagina){
-    yaCambio = true;
-    document.getElementById("app").src = pagina + ".html";
-}
-
-// 🔥 hacerlo global (esto está bien, lo dejé igual)
-window.nav = nav;
-
-// intro → menú (solo si no tocaste nada)
-setTimeout(() => {
-    if(!yaCambio){
-        nav("menu");
-    }
-}, 7500);
-</script>
+<button onclick="location.href='menu.html'" style="font-size:20px; padding:10px;">
+ENTRAR
+</button>
 
 </body>
 </html>
