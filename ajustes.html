@@ -131,23 +131,23 @@
 
     <div class="terminal-frame" id="mainFrame">
         <div class="scanline"></div>
-        <div class="header">CORE.V44 <span>SETTINGS</span></div>
+        <div class="header">CORE.V44 <span>ajustes</span></div>
 
         <div class="setting-item">
             <span class="label-white">Ambiente_Visual</span>
             <select id="env">
-                <option>CYBERPUNK_NEON_GRID</option>
-                <option>VOID_INDUSTRIAL_0.1</option>
-                <option>MATRIX_CORE_OVERRIDE</option>
+                <option>mantenimiento</option>
+                <option>mantenimiento</option>
+                <option>mantenimiento</option>
             </select>
         </div>
 
         <div class="setting-item">
-            <span class="label-white">Buffer_Velocidad (FPS)</span>
+            <span class="label-white">Hz "fps"</span>
             <select id="fps">
-                <option>UNLOCKED_200HZ</option>
-                <option>STABLE_120HZ</option>
-                <option>LIMIT_60HZ</option>
+                <option>200Hz</option>
+                <option>120Hz</option>
+                <option>60Hz</option>
             </select>
         </div>
 
@@ -161,7 +161,7 @@
 
             frame.classList.add('shake-heavy');
             btn.classList.add('loading');
-            btn.innerText = "ACCEDIENDO...";
+            btn.innerText = "entrando...";
             
             setTimeout(() => {
                 frame.style.transform = "scale(1.5) rotate(5deg)";
