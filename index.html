@@ -24,13 +24,21 @@ iframe {
 <iframe id="app" src="intro.html"></iframe>
 
 <script>
+let yaCambio = false;
+
 function nav(pagina){
+    yaCambio = true;
     document.getElementById("app").src = pagina + ".html";
 }
 
-// pasa de intro → menú automáticamente
+// 🔥 hacerlo global (esto está bien, lo dejé igual)
+window.nav = nav;
+
+// intro → menú (solo si no tocaste nada)
 setTimeout(() => {
-    nav("menu");
+    if(!yaCambio){
+        nav("menu");
+    }
 }, 7500);
 </script>
 
