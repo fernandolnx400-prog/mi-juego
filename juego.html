@@ -209,7 +209,7 @@
                     
                     if (check(r, col)) {
                         gameActive = false;
-                        document.getElementById('toast').innerText = `GANO EL JUGADOR: PLAYER_${currentPlayer === 1 ? 'JUGADOR1' : 'JUGADOR2'}`;
+                        document.getElementById('toast').innerText = `GANO EL JUGADOR: ${currentPlayer === 1 ? 'JUGADOR1' : 'JUGADOR2'}`;
                         document.getElementById('toast').classList.add('show');
                         document.getElementById('reset-btn').style.display = 'block';
                         piece.style.display = 'none';
@@ -218,7 +218,7 @@
                     }
                     currentPlayer = currentPlayer === 1 ? 2 : 1;
                     piece.className = `drag-piece p${currentPlayer}`;
-                    document.getElementById('status').innerText = `TURN: ${currentPlayer === 1 ? 'JUGADOR1' : 'JUGAOR2'}`;
+                    document.getElementById('status').innerText = `Turno de: ${currentPlayer === 1 ? 'JUGADOR1' : 'JUGADOR2'}`;
                     sfx(800, 'sine', 0.05); // Sonido cambio
                     return;
                 }
