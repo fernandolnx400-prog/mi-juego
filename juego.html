@@ -140,7 +140,7 @@
 <body>
 
     <div class="cyber-bg"><div class="grid-floor grid-lines"></div></div>
-    <div id="status">TURN_READY: RED_SYSTEM</div>
+    <div id="status">Turno de: Jugador1</div>
     <div id="toast"></div>
 
     <div class="game-container" id="game-area">
@@ -150,7 +150,7 @@
         <div class="board" id="main-board"></div>
     </div>
 
-    <button id="reset-btn" class="btn-reset" onclick="location.reload()">REBOOT_MATCH</button>
+    <button id="reset-btn" class="btn-reset" onclick="location.reload()">REINICIO</button>
 
     <script>
         const ROWS = 6, COLS = 7;
@@ -209,7 +209,7 @@
                     
                     if (check(r, col)) {
                         gameActive = false;
-                        document.getElementById('toast').innerText = `CRITICAL_WIN: PLAYER_${currentPlayer === 1 ? 'RED' : 'NEON'}`;
+                        document.getElementById('toast').innerText = `GANO EL JUGADOR: PLAYER_${currentPlayer === 1 ? 'JUGADOR1' : 'JUGADOR2'}`;
                         document.getElementById('toast').classList.add('show');
                         document.getElementById('reset-btn').style.display = 'block';
                         piece.style.display = 'none';
@@ -218,7 +218,7 @@
                     }
                     currentPlayer = currentPlayer === 1 ? 2 : 1;
                     piece.className = `drag-piece p${currentPlayer}`;
-                    document.getElementById('status').innerText = `TURN: ${currentPlayer === 1 ? 'RED_SYSTEM' : 'NEON_CORE'}`;
+                    document.getElementById('status').innerText = `TURN: ${currentPlayer === 1 ? 'JUGADOR1' : 'JUGAOR2'}`;
                     sfx(800, 'sine', 0.05); // Sonido cambio
                     return;
                 }
