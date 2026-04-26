@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conecta 4 - Minecraft Edition</title>
-    <!-- Fuente estilo Pixel/Minecraft -->
+
     <link href="https://googleapis.com" rel="stylesheet">
+
     <style>
         :root {
             --mc-gray: #AAAAAA;
@@ -19,7 +20,6 @@
         body {
             margin: 0;
             padding: 0;
-            /* Fondo de tierra/pasto pixelado */
             background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
                         url('https://transparenttextures.com'), #487e32;
             font-family: 'VT323', monospace;
@@ -30,7 +30,6 @@
             overflow: hidden;
         }
 
-        /* --- CONTENEDOR --- */
         .menu-wrapper {
             text-align: center;
             width: 100%;
@@ -45,7 +44,6 @@
             letter-spacing: 2px;
         }
 
-        /* --- BOTONES ESTILO MINECRAFT --- */
         .button-list {
             display: flex;
             flex-direction: column;
@@ -71,7 +69,6 @@
             transition: all 0.1s;
         }
 
-        /* Hover: Color verde de selección */
         .mc-button:hover {
             background-color: var(--mc-green);
             color: #fff;
@@ -87,7 +84,6 @@
             box-shadow: inset 0 0 10px #000;
         }
 
-        /* Etiqueta de versión abajo */
         .version {
             position: absolute;
             bottom: 10px;
@@ -104,21 +100,27 @@
         <h1 class="title">CONECTA 4</h1>
 
         <div class="button-list">
-            <!-- 🔥 SOLO SE AGREGÓ onclick -->
-            <button class="mc-button" onclick="parent.nav('juego')">JUGAR</button>
-            <button class="mc-button" onclick="parent.nav('ajustes')">AJUSTES</button>
+            <!-- 🔥 MISMO HTML, SOLO CAMBIÉ LA FUNCIÓN -->
+            <button class="mc-button" onclick="ir('juego')">JUGAR</button>
+            <button class="mc-button" onclick="ir('ajustes')">AJUSTES</button>
         </div>
     </div>
 
     <div class="version">Minecraft v1.20.4</div>
 
     <script>
-        // Efecto de sonido de click opcional (feedback visual)
-        document.querySelectorAll('.mc-button').forEach(btn => {
-            btn.onclick = () => {
-                console.log("Acción: " + btn.innerText);
-            };
-        });
+        function ir(pagina){
+            try {
+                if (window.parent && typeof window.parent.nav === "function") {
+                    window.parent.nav(pagina);
+                } else {
+                    window.location.href = pagina + ".html";
+                }
+            } catch(e){
+                window.location.href = pagina + ".html";
+            }
+        }
     </script>
+
 </body>
 </html>
